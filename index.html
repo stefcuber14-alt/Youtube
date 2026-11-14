@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b12">
+  <title>TubeNova — смотри больше</title>
+  <style>
+    :root{color-scheme:dark;--bg:#090b12;--panel:#121624;--panel2:#191f30;--muted:#9aa4bb;--text:#f5f7ff;--a:#8b5cf6;--b:#22d3ee}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(ellipse at 15% -10%,#292052 0,transparent 36%),radial-gradient(ellipse at 100% 0,#10313d 0,transparent 28%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
+    button,input{font:inherit}
+    .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;padding:13px clamp(14px,4vw,48px);background:#090b12eF;backdrop-filter:blur(18px);border-bottom:1px solid #ffffff12}
+    .brand{display:flex;align-items:center;gap:9px;font-size:20px;font-weight:850;white-space:nowrap;letter-spacing:-.7px}
+    .brand-mark{width:34px;height:34px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 5px 24px #8b5cf655}
+    .brand-mark svg{width:17px;fill:white;margin-left:2px}
+    .brand span:last-child{background:linear-gradient(90deg,#c4b5fd,#67e8f9);background-clip:text;color:transparent}
+    .search{display:flex;max-width:720px;flex:1;margin:auto;gap:8px}
+    .search input{width:100%;min-width:0;border:1px solid #ffffff18;border-radius:16px;background:#151a29;padding:12px 16px;color:var(--text);outline:none;transition:.2s}
+    .search input:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px #8b5cf622}
+    .search button,.primary{border:0;border-radius:14px;padding:11px 18px;color:white;font-weight:700;background:linear-gradient(110deg,#7c3aed,#0891b2);cursor:pointer;box-shadow:0 6px 20px #6d28d933}
+    button:active{transform:scale(.98)}
+    .layout{max-width:1500px;margin:auto;padding:28px clamp(14px,4vw,48px) 60px}
+    .hero{position:relative;overflow:hidden;padding:clamp(22px,4vw,42px);border:1px solid #ffffff18;border-radius:26px;background:linear-gradient(115deg,#251c46ee,#142c3bee);box-shadow:0 20px 70px #0005;margin-bottom:28px}
+    .hero:after{content:"▶";position:absolute;right:5%;top:50%;transform:translateY(-50%) rotate(-9deg);font-size:clamp(90px,18vw,210px);color:#ffffff0b;pointer-events:none}
+    .eyebrow{color:#a5f3fc;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:800}
+    h1{font-size:clamp(28px,5vw,48px);line-height:1.08;letter-spacing:-1.7px;margin:10px 0}
+    .hero p{max-width:560px;color:#c3c9da;margin:0}
+    .chips{display:flex;gap:9px;overflow:auto;padding:2px 0 18px;scrollbar-width:none}
+    .chip{border:1px solid #ffffff16;background:#151a29;color:#cbd5e1;border-radius:999px;padding:8px 15px;white-space:nowrap;cursor:pointer}
+    .chip.active,.chip:hover{background:#ede9fe;color:#25134e;border-color:transparent}
+    .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 17px}
+    h2{font-size:21px;letter-spacing:-.4px;margin:0}
+    .sub{font-size:13px;color:var(--muted)}
+    #results{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:25px 17px}
+    .video-card{min-width:0;cursor:pointer;animation:rise .35s ease both}
+    @keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+    .thumb-wrap{position:relative;aspect-ratio:16/9;border-radius:17px;overflow:hidden;background:var(--panel2);border:1px solid #ffffff12}
+    .thumb{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+    .video-card:hover .thumb{transform:scale(1.045)}
+    .play-overlay{position:absolute;inset:0;display:grid;place-items:center;background:#05071155;opacity:0;transition:.2s}
+    .video-card:hover .play-overlay{opacity:1}
+    .play-overlay span{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--b));font-size:20px;padding-left:3px}
+    .video-title{font-weight:750;line-height:1.35;margin:10px 0 5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .channel,.meta{font-size:12px;color:var(--muted)}
+    .player-panel{display:none;margin:0 0 30px;padding:14px;border:1px solid #ffffff1c;border-radius:22px;background:#111624eF;box-shadow:0 20px 60px #0006}
+    .player-panel.visible{display:block}
+    .player-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+    .player-top strong{font-size:14px}
+    .close-player{border:1px solid #ffffff20;background:#20283a;color:white;border-radius:10px;padding:7px 12px;cursor:pointer}
+    .video-frame{position:relative;aspect-ratio:16/9;max-height:70vh;background:#000;border-radius:15px;overflow:hidden}
+    .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    #nowTitle{font-size:17px;font-weight:750;margin:13px 3px 3px}
+    #status{color:var(--muted);text-align:center;padding:28px 12px}
+    #moreResults{display:none;margin:22px auto 0;padding:11px 22px;border:1px solid #ffffff24;border-radius:13px;background:#1a2030;color:white;cursor:pointer}
+    .settings{margin-top:38px;padding:17px;border:1px solid #ffffff14;border-radius:18px;background:#101522}
+    .settings summary{cursor:pointer;color:#cbd5e1;font-weight:650}
+    .key-row{display:flex;gap:9px;margin-top:14px;max-width:720px}
+    .key-row input{flex:1;min-width:0;border:1px solid #ffffff20;border-radius:12px;background:#090d17;color:white;padding:11px 13px}
+    .key-row button{border:0;border-radius:12px;background:#293149;color:white;padding:10px 15px;cursor:pointer}
+    .hint{color:#8792aa;font-size:12px;max-width:850px;margin-top:10px}
+    footer{text-align:center;color:#737e95;font-size:12px;padding:28px 12px}
+    @media(max-width:650px){.topbar{flex-wrap:wrap;gap:10px}.brand{font-size:18px}.search{order:2;flex-basis:100%;max-width:none}.search input{padding:11px 13px}.layout{padding-top:18px}.hero{border-radius:20px}.hero:after{right:-5%;font-size:120px}#results{grid-template-columns:1fr;gap:22px}.thumb-wrap{border-radius:15px}.key-row{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>Tube<span>Nova</span></div>
+    <form class="search" id="searchForm">
+      <input id="query" type="search" placeholder="Найди видео на YouTube..." autocomplete="off" required>
+      <button type="submit">Искать ↗</button>
+    </form>
+  </header>
+  <main class="layout">
+    <section class="hero">
+      <div class="eyebrow">Твоя видеовселенная</div>
+      <h1>Смотри. Находи.<br>Открывай новое.</h1>
+      <p>Ищи видео на YouTube и запускай их во встроенном плеере — всё в одном удобном месте.</p>
+    </section>
+
+    <section class="player-panel" id="playerWrap">
+      <div class="player-top"><strong>СЕЙЧАС СМОТРИШЬ</strong><button class="close-player" id="closePlayer" type="button">Закрыть ✕</button></div>
+      <div class="video-frame" id="videoFrame"></div>
+      <div id="nowTitle"></div>
+    </section>
+
+    <nav class="chips" aria-label="Категории">
+      <button class="chip active" data-query="популярные видео" type="button">✨ Популярное</button>
+      <button class="chip" data-query="Minecraft" type="button">⛏ Minecraft</button>
+      <button class="chip" data-query="робототехника" type="button">🤖 Робототехника</button>
+      <button class="chip" data-query="игры" type="button">🎮 Игры</button>
+      <button class="chip" data-query="технологии" type="button">💡 Технологии</button>
+      <button class="chip" data-query="музыка" type="button">🎵 Музыка</button>
+      <button class="chip" data-query="наука" type="button">🔬 Наука</button>
+    </nav>
+
+    <div class="section-head">
+      <div><h2 id="sectionTitle">Поиск по YouTube</h2><div class="sub">Результаты появляются здесь</div></div>
+    </div>
+    <section id="results"></section>
+    <div id="status">Введи запрос или выбери категорию выше.</div>
+    <button id="moreResults" type="button">Загрузить ещё ↓</button>
+
+    <details class="settings">
+      <summary>⚙ Настройки поиска</summary>
+      <div class="key-row">
+        <input id="apiKey" type="password" placeholder="YouTube Data API v3 — API key" autocomplete="off">
+        <button id="saveKey" type="button">Сохранить</button>
+      </div>
+      <div class="hint">Для поиска по всему YouTube нужен ключ YouTube Data API v3. Он хранится в локальном хранилище этого браузера. Не отправляй ключ в чат и не добавляй его в публичный репозиторий. В Google Cloud ограничь ключ только YouTube Data API v3 и HTTP-referrer своего сайта.</div>
+    </details>
+  </main>
+  <footer>TubeNova — независимый интерфейс для поиска и просмотра видео YouTube.</footer>
+  <script src="player.js"></script>
+  <script src="search.js"></script>
+</body>
+</html>
